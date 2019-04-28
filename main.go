@@ -39,7 +39,11 @@ func main() {
 	app.Action = func(context *cli.Context) (err error) {
 		_fly := fly.NewFly()
 		answer := _fly.Ask()
-		_fly.Run(answer)
+		log.Println("123123",answer)
+		log.Println(_fly)
+		a := _fly.Run(answer)
+		log.Println(a)
+		log.Println("444")
 		return
 	}
 
