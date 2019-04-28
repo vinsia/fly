@@ -38,7 +38,6 @@ func (fly *Fly) GetQuestions() []*survey.Question {
 func (fly *Fly) GetCommand(answer *Answer) *exec.Cmd {
 	server := fly.source.GetServer(answer.ServerName)
 	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName +"@" + server.Host)
-	log.Println(command)
 	return command
 }
 
@@ -52,7 +51,6 @@ func (fly *Fly) Ask() *Answer {
 }
 
 func (fly *Fly) Run(answer *Answer) {
-	log.Print(answer.ServerName)
 	command := fly.GetCommand(answer)
 	command.Stdout = os.Stdout
 	command.Stdin = os.Stdin
