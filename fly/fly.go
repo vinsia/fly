@@ -12,12 +12,12 @@ type Answer struct {
 }
 
 type Fly struct {
-	DataBase *DB
+	source *ConfigReader
 }
 
 func (fly *Fly) GetQuestions() []*survey.Question {
 	var options []string
-	serverList := fly.DataBase.GetServerList()
+	serverList := fly.source.GetServerList()
 	for _, server := range serverList {
 		options = append(options, server.Name)
 	}
@@ -29,24 +29,17 @@ func (fly *Fly) GetQuestions() []*survey.Question {
 				Message: "Choose a server",
 				Options: options,
 				Default: options[0],
+				PageSize: 10,
 			},
 		},
 	}
 }
 
 func (fly *Fly) GetCommand(answer *Answer) *exec.Cmd {
-	server := fly.DataBase.GetServer(answer.ServerName)
-	// log.Printf("sshpass -p %s ssh %s@%s\n", server.Password, server.UserName, server.Host)
+	server := fly.source.GetServer(answer.ServerName)
 	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName +"@" + server.Host)
+	log.Println(command)
 	return command
-}
-
-func (fly *Fly) Fly() {
-	fly.DataBase.Start()
-}
-
-func (fly *Fly) Crash() {
-	fly.DataBase.close()
 }
 
 func (fly *Fly) Ask() *Answer {
@@ -67,18 +60,8 @@ func (fly *Fly) Run(answer *Answer) {
 	_ = command.Run()
 }
 
-func (fly *Fly) UpdateServer(server Server) {
-	otherServer := fly.DataBase.getDefault()
-	server.Merge(&otherServer)
-	fly.DataBase.UpdateServer(server)
-}
-
-func (fly *Fly) UpdateDefault(server Server) {
-	fly.DataBase.UpdateDefault(server)
-}
-
 func NewFly() *Fly {
-	return &Fly{DataBase: NewDB()}
+	return &Fly{source: NewConfigReader()}
 }
 
 

@@ -38,30 +38,8 @@ func main() {
 	app := initFlags()
 	app.Action = func(context *cli.Context) (err error) {
 		_fly := fly.NewFly()
-		_fly.Fly()
-		defer _fly.Crash()
-		if context.String("mode") != "" {
-			if context.String("mode") == "add" {
-				_fly.UpdateServer(fly.Server{
-					Name:     context.String("name"),
-					UserName: context.String("user"),
-					Host:     context.String("host"),
-					Password: context.String("password"),
-				})
-			} else if context.String("mode") == "default" {
-				_fly.UpdateDefault(fly.Server{
-					Name:     context.String("name"),
-					UserName: context.String("user"),
-					Host:     context.String("host"),
-					Password: context.String("password"),
-				})
-			} else {
-				log.Fatal("Not support such mode.")
-			}
-		} else {
-			answer := _fly.Ask()
-			_fly.Run(answer)
-		}
+		answer := _fly.Ask()
+		_fly.Run(answer)
 		return
 	}
 
