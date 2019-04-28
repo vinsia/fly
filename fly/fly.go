@@ -55,7 +55,9 @@ func (fly *Fly) Run(answer *Answer) {
 	command.Stdout = os.Stdout
 	command.Stdin = os.Stdin
 	command.Stderr = os.Stderr
-	_ = command.Run()
+	if err := command.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func NewFly() *Fly {
