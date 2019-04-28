@@ -22,13 +22,13 @@ func (fly *Fly) GetQuestions() []*survey.Question {
 		options = append(options, server.Name)
 	}
 
-	return []*survey.Question {
+	return []*survey.Question{
 		{
 			Name: "serverName",
 			Prompt: &survey.Select{
-				Message: "Choose a server",
-				Options: options,
-				Default: options[0],
+				Message:  "Choose a server",
+				Options:  options,
+				Default:  options[0],
 				PageSize: 10,
 			},
 		},
@@ -37,8 +37,7 @@ func (fly *Fly) GetQuestions() []*survey.Question {
 
 func (fly *Fly) GetCommand(answer *Answer) *exec.Cmd {
 	server := fly.source.GetServer(answer.ServerName)
-	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName +"@" + server.Host)
-	log.Println(command)
+	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName+"@"+server.Host)
 	return command
 }
 
@@ -52,7 +51,6 @@ func (fly *Fly) Ask() *Answer {
 }
 
 func (fly *Fly) Run(answer *Answer) {
-	log.Print(answer.ServerName)
 	command := fly.GetCommand(answer)
 	command.Stdout = os.Stdout
 	command.Stdin = os.Stdin
@@ -63,5 +61,3 @@ func (fly *Fly) Run(answer *Answer) {
 func NewFly() *Fly {
 	return &Fly{source: NewConfigReader()}
 }
-
-
