@@ -41,6 +41,12 @@ func (fly *Fly) GetCommand(answer *Answer) *exec.Cmd {
 	return command
 }
 
+func (fly *Fly) RepairCommand(answer *Answer) *exec.Cmd {
+	server := fly.source.GetServer(answer.ServerName)
+	command := exec.Command("ssh", server.UserName + "@" + server.Host)
+	return command
+}
+
 func (fly *Fly) Ask() *Answer {
 	answer := Answer{}
 	if err := survey.Ask(fly.GetQuestions(), &answer); err != nil {
