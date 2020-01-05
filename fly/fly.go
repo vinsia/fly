@@ -1,10 +1,12 @@
 package fly
 
 import (
-	"gopkg.in/AlecAivazis/survey.v1"
 	"log"
 	"os"
 	"os/exec"
+	"sort"
+
+	"github.com/AlecAivazis/survey/v2"
 )
 
 type Answer struct {
@@ -18,18 +20,20 @@ type Fly struct {
 func (fly *Fly) GetQuestions() []*survey.Question {
 	var options []string
 	serverList := fly.source.GetServerList()
+	sort.Slice(serverList, func(i int, j int) bool { return serverList[i].Name < serverList[j].Name })
 	for _, server := range serverList {
 		options = append(options, server.Name)
 	}
 
-	return []*survey.Question {
+	return []*survey.Question{
 		{
 			Name: "serverName",
 			Prompt: &survey.Select{
-				Message: "Choose a server",
-				Options: options,
-				Default: options[0],
+				Message:  "Choose a server: ",
+				Options:  options,
+				Default:  options[0],
 				PageSize: 10,
+				Filter:   FuzzySearch,
 			},
 		},
 	}
@@ -37,13 +41,13 @@ func (fly *Fly) GetQuestions() []*survey.Question {
 
 func (fly *Fly) GetCommand(answer *Answer) *exec.Cmd {
 	server := fly.source.GetServer(answer.ServerName)
-	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName +"@" + server.Host)
+	command := exec.Command("sshpass", "-p", server.Password, "ssh", server.UserName+"@"+server.Host)
 	return command
 }
 
 func (fly *Fly) RepairCommand(answer *Answer) *exec.Cmd {
 	server := fly.source.GetServer(answer.ServerName)
-	command := exec.Command("ssh", server.UserName + "@" + server.Host)
+	command := exec.Command("ssh", server.UserName+"@"+server.Host)
 	return command
 }
 
@@ -69,5 +73,3 @@ func (fly *Fly) Run(answer *Answer) {
 func NewFly() *Fly {
 	return &Fly{source: NewConfigReader()}
 }
-
-
