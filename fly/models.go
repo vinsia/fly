@@ -6,18 +6,17 @@ import (
 )
 
 type Server struct {
-	Name string
+	Name     string
 	UserName string
-	Host string
+	Host     string
 	Password string
-	Port string
-	Tag string
+	Port     string
+	Tag      string
 	Category string
 }
 
-
 func (server *Server) ToJson() []byte {
-	if data, err:= json.Marshal(server); err == nil {
+	if data, err := json.Marshal(server); err == nil {
 		return data
 	}
 	log.Fatal("Can't convert server to json.")
@@ -47,12 +46,12 @@ func FromJson(data []byte) Server {
 
 func FromMap(data map[string]string) Server {
 	server := Server{
-		Name: data["name"],
+		Name:     data["name"],
 		UserName: data["username"],
-		Host: data["host"],
+		Host:     data["host"],
 		Password: data["password"],
-		Port: data["port"],
-		Tag: data["tag"],
+		Port:     data["port"],
+		Tag:      data["tag"],
 		Category: data["category"],
 	}
 	return server

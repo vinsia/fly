@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/vinsia/fly/fly"
-	"gopkg.in/urfave/cli.v1"
 	"log"
 	"os"
+
+	"github.com/vinsia/fly/fly"
+
+	"gopkg.in/urfave/cli.v1"
 )
 
 func initFlags() (app *cli.App) {
